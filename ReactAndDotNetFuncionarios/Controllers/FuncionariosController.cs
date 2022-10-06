@@ -12,10 +12,12 @@ namespace ReactAndDotNetFuncionarios.Controllers
     public class FuncionariosController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _env;
 
-        public FuncionariosController(IConfiguration configuration)
+        public FuncionariosController(IConfiguration configuration, IWebHostEnvironment env)
         {
             _configuration = configuration;
+            _env = env;
         }
 
         // GET: api/<FuncionariosController>
@@ -142,6 +144,61 @@ namespace ReactAndDotNetFuncionarios.Controllers
             }
 
             return new JsonResult("Excluido com sucesso");
+        }
+
+        [Route("SaveFile")]
+        [HttpPost()]
+        public JsonResult SaveFile()
+        {
+            try
+            {
+                var httpRequest = Request.Form;
+                var postedFile = httpRequest.Files[0];
+                string fileName = postedFile.FileName;
+                var physicalPath = _env.ContentRootPath + "/Fotos/" + fileName;
+
+                using(var stream = new FileStream(physicalPath, FileMode.Create))
+                {
+                    postedFile.CopyTo(stream);
+                }
+
+                return new JsonResult(fileName);
+            }
+            catch (Exception)
+            {
+
+                return new JsonResult("Erro.png");
+            }
+        }
+
+        [Route("ObtemNomeDepartamentos")]
+        [HttpGet()]
+        public JsonResult ObtemNomeDepartamentos()
+        {
+            string query = @"select NomeDepartamento from Departamento";
+
+            DataTable table = new DataTable();
+
+            string sqlDataSource = _configuration.GetConnectionString("CS");
+
+            SqlDataReader sqlDataReader;
+
+            using (SqlConnection conn = new SqlConnection(sqlDataSource))
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    sqlDataReader = cmd.ExecuteReader();
+                    table.Load(sqlDataReader);
+
+                    sqlDataReader.Close();
+                    conn.Close();
+                }
+
+            }
+
+            return new JsonResult(table);
         }
     }
 }

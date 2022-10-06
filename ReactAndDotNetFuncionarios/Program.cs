@@ -1,3 +1,4 @@
+using Microsoft.Extensions.FileProviders;
 using Newtonsoft.Json.Serialization;
 
 namespace ReactAndDotNetFuncionarios
@@ -40,6 +41,12 @@ namespace ReactAndDotNetFuncionarios
             app.UseAuthorization();
 
             //app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Fotos")),
+                RequestPath = "/Fotos"            
+            });
 
             app.MapControllers();
 
