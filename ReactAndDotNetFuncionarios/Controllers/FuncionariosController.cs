@@ -93,14 +93,55 @@ namespace ReactAndDotNetFuncionarios.Controllers
 
         // PUT api/<FuncionariosController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public JsonResult Put(int id, [FromBody] Funcionario funcionario)
         {
+            string query = @"update dbo.Empregado set
+                     NomeEmpregado = '" + funcionario.NomeFuncinoario + @"',
+                     Departamento = '" + funcionario.Departamento + @"',
+                     DataInicio = '" + funcionario.DataInicio + @"',
+                     NomeArquivoFoto = '" + funcionario.NomeAraquivoFoto + @"'
+                     where empregadoId = '" + id + "'";
+
+
+            string sqlDataSource = _configuration.GetConnectionString("CS");
+
+
+            using (SqlConnection conn = new SqlConnection(sqlDataSource))
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
+
+            }
+
+            return new JsonResult("Alterado com sucesso");
         }
 
         // DELETE api/<FuncionariosController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public JsonResult Delete(int id)
         {
+            string query = @"DELETE from Empregado where empregadoId = '" + id + "'";
+
+            string sqlDataSource = _configuration.GetConnectionString("CS");
+
+            using (SqlConnection conn = new SqlConnection(sqlDataSource))
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = new SqlCommand(query, conn))
+                {
+                    cmd.ExecuteNonQuery();
+                    conn.Close();
+                }
+
+            }
+
+            return new JsonResult("Excluido com sucesso");
         }
     }
 }
