@@ -17,9 +17,10 @@ namespace ReactAndDotNetFuncionarios
             builder.Services.AddSwaggerGen();
 
             //Enable CORS
-            //builder.Services.AddCors(c => {
-            //    c.AddPolicy("AllowOrigin", c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
-            //});
+            builder.Services.AddCors(c =>
+            {
+                c.AddPolicy("AllowOrigin", c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            });
 
             builder.Services.AddControllersWithViews()
                 .AddNewtonsoftJson(options =>
@@ -40,7 +41,7 @@ namespace ReactAndDotNetFuncionarios
 
             app.UseAuthorization();
 
-            //app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
             app.UseStaticFiles(new StaticFileOptions
             {

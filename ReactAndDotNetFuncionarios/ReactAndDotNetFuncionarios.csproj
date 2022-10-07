@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <Folder Include="Fotos\" />
+    <Folder Include="React\" />
   </ItemGroup>
 
 </Project>
