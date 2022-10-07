@@ -1,35 +1,54 @@
 import React, { Component } from "react";
 import {ButtonToolbar, Table, Button} from "react-bootstrap";
 import {AddDepModal} from './addDepModal';
+import {EditDepModal} from './editDepModal';
 
 export class Departamento extends Component {
 
     constructor(props) {
         super(props);
-        this.state = {deps:[], addModalShow: false};
+        this.state = {deps:[], addModalShow: false, editModalShow: false};
         
     }
 
     refreshList() {
-        fetch(process.env.REACT_APP_API + '/departamentos')
-        .then(response => response.json())
-        .then(data => {
-            this.setState({deps: data});
-        })
+
+        // const response = await fetch(process.env.REACT_APP_API + '/departamentos');
+        // const data = await response.json();
+        // this.setState({deps: data});
+         
+            fetch(process.env.REACT_APP_API + '/departamentos')
+            .then(response => response.json())
+            .then(data => {
+
+                this.setState({deps: data});
+   
+            });
+        
     }
 
     componentDidMount() {
         this.refreshList();
     }
 
-    componentDidUpdate(s) {
-        //this.refreshList();
+    componentDidUpdate(prevProps, prevState) {        
+
+        if (JSON.stringify(prevState.deps) !== JSON.stringify(this.state.deps)) {
+            this.refreshList();
+        }else{
+            return
+        }
     }
 
     render() {
 
-        const {deps} = this.state;
-        let addModalClose = () => this.setState({addModalShow: false});
+        const {deps, depid, depname} = this.state;
+        let addModalClose = () => this.setState({addModalShow: false}, () => {
+            this.refreshList();
+        });
+        let editModalClose = () => this.setState({editModalShow: false}, () => {
+            this.refreshList();
+        });
         return (
             <div className="mt-2 d-flex justify-content-left container">
                 <Table className="mt-4" striped bordered hover size="sn">
@@ -45,7 +64,19 @@ export class Departamento extends Component {
                             <tr key={dep.departamentoId}>
                                 <th>{dep.departamentoId}</th>
                                 <th>{dep.NomeDepartamento}</th>
-                                <th>Editar / Excluir</th>
+                                <th>
+                                <ButtonToolbar>
+                                    <Button className="mr-2" variant='primary' onClick={() => {this.setState({editModalShow: true, depid: dep.departamentoId, depname: dep.NomeDepartamento})}}>
+                                        Edit Departamento
+                                    </Button>
+
+                                    <EditDepModal show={this.state.editModalShow}
+                                    onHide={editModalClose}
+                                    depid={depid}
+                                    depname={depname}
+                                    />
+                                </ButtonToolbar>
+                                </th>
                             </tr>
                         )}
                     </tbody>
@@ -63,11 +94,7 @@ export class Departamento extends Component {
                             </td>
                         </tr>
                    </tfoot>
-
              </Table>
-
-
-
             </div>
             
         )

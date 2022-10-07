@@ -115,7 +115,6 @@ namespace ReactAndDotNetFuncionarios.Controllers
             return new JsonResult("Excluido com sucesso");
         }
 
-
     }
 
 
