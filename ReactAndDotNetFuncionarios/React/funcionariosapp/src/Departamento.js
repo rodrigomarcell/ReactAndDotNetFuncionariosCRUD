@@ -40,6 +40,18 @@ export class Departamento extends Component {
         }
     }
 
+    deleteDep(depid){
+        if(window.confirm('Tem certeza?')){
+            fetch(process.env.REACT_APP_API+'/departamentos/'+depid,{
+                method:'DELETE',
+                header:{'Accept':'application/json',
+            'Content-Type':'application/json'}
+            }).then(() => {
+                this.refreshList();
+            });
+        }
+    }
+
     render() {
 
         const {deps, depid, depname} = this.state;
@@ -66,8 +78,12 @@ export class Departamento extends Component {
                                 <th>{dep.NomeDepartamento}</th>
                                 <th>
                                 <ButtonToolbar>
-                                    <Button className="mr-2" variant='primary' onClick={() => {this.setState({editModalShow: true, depid: dep.departamentoId, depname: dep.NomeDepartamento})}}>
-                                        Edit Departamento
+                                    <Button className="btn btn-primary me-2" variant='primary' onClick={() => {this.setState({editModalShow: true, depid: dep.departamentoId, depname: dep.NomeDepartamento})}}>
+                                        Edit 
+                                    </Button>
+
+                                    <Button className="btn btn-danger me-2" variant='danger' onClick={() => this.deleteDep(dep.departamentoId)}>
+                                        Delete 
                                     </Button>
 
                                     <EditDepModal show={this.state.editModalShow}
