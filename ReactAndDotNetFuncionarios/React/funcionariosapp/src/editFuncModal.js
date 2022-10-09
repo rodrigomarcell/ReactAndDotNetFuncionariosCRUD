@@ -8,7 +8,7 @@ export class EditFuncModal extends Component {
         this.state = {
             departamentos: [],
             nomeArquivoFoto: "/avatar.png",
-            fotoPath: "",
+            fotoPath: ""
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSaveFile = this.handleSaveFile.bind(this);
@@ -30,8 +30,8 @@ export class EditFuncModal extends Component {
     handleSubmit(event) {
 
         event.preventDefault();
-        
-        fetch(process.env.REACT_APP_API + '/funcionarios', {
+        let id = event.target.FuncionarioId.value;
+        fetch(process.env.REACT_APP_API + '/funcionarios/'+id, {
             method: 'PUT',
             headers: {
                 'Accept': 'application/json',
@@ -42,7 +42,7 @@ export class EditFuncModal extends Component {
                 NomeFuncinoario: event.target.NomeFuncinoario.value,
                 Departamento: event.target.Departamento.value,
                 DataInicio: event.target.DataInicio.value,
-                NomeArquivoFoto: this.state.fotoPath
+                NomeArquivoFoto: process.env.REACT_APP_FOTOPATH +"/" + event.target.NomeArquivoFoto.value.split("\\")[2]
             })
         })
             .then(res => res.json())
@@ -72,9 +72,10 @@ export class EditFuncModal extends Component {
             .then(res => res.json())
             .then(result => {
 
-                this.setState({ fotoPath: process.env.REACT_APP_FOTOPATH + "/" + result }, () => {
-                    alert('Imagem alterada com sucesso ' + this.state.fotoPath);
-                });
+                this.props.onChange(process.env.REACT_APP_FOTOPATH + "/" + result);
+                // this.setState({ fotoPath: process.env.REACT_APP_FOTOPATH + "/" + result }, () => {
+                //     alert('Imagem alterada com sucesso ' + this.state.fotoPath);
+                // });
 
             }, (erro) => {
                 alert('Falha');
@@ -83,7 +84,7 @@ export class EditFuncModal extends Component {
 
 
     render() {
-        debugger
+        
         return (
             
             <div className="container">
@@ -95,9 +96,10 @@ export class EditFuncModal extends Component {
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
+                    <Form onSubmit={this.handleSubmit}>
                         <Row>
                             <Col sm={6}>
-                                <Form onSubmit={this.handleSubmit}>
+                              
 
                                      <Form.Group controlId="FuncionarioId">
                                         <Form.Label>Nome Funcionário</Form.Label>
@@ -127,7 +129,7 @@ export class EditFuncModal extends Component {
                                     <Form.Group controlId="DataInicio">
                                         <Form.Label>Data de inicio</Form.Label>
                                         <Form.Control
-                                            defaultValue={this.props.funcdatainicio}
+                                            defaultValue={this.props.funcdatainicio ? this.props.funcdatainicio.split("T")[0] : ""}
                                             type="date"
                                             name="DataDeInicio"
                                             required
@@ -141,14 +143,15 @@ export class EditFuncModal extends Component {
                                             Edit Funcionário
                                         </Button>
                                     </Form.Group>
-                                </Form>
+                                
                             </Col>
                             <Col sm={6}>
                                 <img width="200px" alt="Imagem" height="200px" 
-                                src={process.env.REACT_APP_FOTOPATH+this.props.funcfoto} />
+                                src={this.props.funcfoto} />
                                 <input name="NomeArquivoFoto" onChange={this.handleSaveFile} type="file" />
                             </Col>
                         </Row>
+                        </Form>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button vaiant="danger" onClick={this.props.onHide}>Fechar</Button>
