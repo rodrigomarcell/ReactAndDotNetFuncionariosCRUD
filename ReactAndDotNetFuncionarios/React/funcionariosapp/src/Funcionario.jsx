@@ -7,7 +7,7 @@ export class Funcionario extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { funcs: [], addModalShow: false, editModalShow: false };
+        this.state = { funcs: [], addModalShow: false, editModalShow: false, funcfoto: "/avatar.png" };
 
     }
 
@@ -23,6 +23,8 @@ export class Funcionario extends Component {
 
     }
 
+
+
     componentDidMount() {
         this.refreshList();
     }
@@ -31,6 +33,7 @@ export class Funcionario extends Component {
 
         if (JSON.stringify(prevState.funcs) !== JSON.stringify(this.state.funcs)) {
             this.refreshList();
+
         } else {
             return
         }
@@ -54,12 +57,31 @@ export class Funcionario extends Component {
 
         const { funcs, funcid, funcname, funcdep, funcfoto, funcdatainicio } = this.state;
 
-        let addModalClose = () => this.setState({ addModalShow: false }, () => {
-            this.refreshList();
-        });
-        let editModalClose = () => this.setState({ editModalShow: false }, () => {
-            this.refreshList();
-        });
+        let addModalClose = () => {
+            
+            this.setState({ addModalShow: false }, () => {
+                this.refreshList();
+                this.setState({ funcfoto: "/avatar.png" });
+            });
+
+        };
+
+        let editModalClose = () => {
+            this.setState({ editModalShow: false }, () => {
+                this.setState({ funcfoto: "/avatar.png" });
+                this.refreshList();
+            });
+        };
+
+        let fotoNameChange = (nomeFoto) => {
+            if(typeof nomeFoto !== 'object'){
+                this.setState({ funcfoto: nomeFoto });
+            }else{
+                return;
+            }
+            
+        }
+
         return (
             <div className="mt-2 d-flex justify-content-left container">
                 <Table className="mt-4" striped bordered hover size="sn">
@@ -78,11 +100,12 @@ export class Funcionario extends Component {
                                 <th>{funcs.EmpregadoId}</th>
                                 <th>{funcs.NomeEmpregado}</th>
                                 <th>{funcs.Departamento}</th>
-                                <th>{funcs.DataInicio}</th>
+                                <th>{funcs.DataInicio.split("T")[0]}</th>
 
                                 <th>
                                     <ButtonToolbar>
                                         <Button className="btn btn-primary me-2" variant='primary' onClick={() => {
+
                                             this.setState({
                                                 editModalShow: true,
                                                 funcid: funcs.EmpregadoId,
@@ -90,7 +113,9 @@ export class Funcionario extends Component {
                                                 funcdep: funcs.Departamento,
                                                 funcfoto: funcs.NomeArquivoFoto,
                                                 funcdatainicio: funcs.DataInicio
-                                            })
+                                            });
+
+                                            debugger
                                         }}>
                                             Edit
                                         </Button>
@@ -117,12 +142,19 @@ export class Funcionario extends Component {
                         <tr>
                             <td className="justify-content-center" colSpan="5">
                                 <ButtonToolbar>
-                                    <Button variant='primary' onClick={() => { this.setState({ addModalShow: true }) }}>
+                                    <Button variant='primary' onClick={() => {
+                                        this.setState({ addModalShow: true })
+                                    }}>
                                         Add Funcionário
                                     </Button>
                                 </ButtonToolbar>
 
-                                <AddFuncModal show={this.state.addModalShow} onHide={addModalClose}></AddFuncModal>
+                                <AddFuncModal 
+                                show={this.state.addModalShow} 
+                                funcfoto={this.state.funcfoto} 
+                                onChange = {fotoNameChange}
+                                onHide={addModalClose}>
+                                </AddFuncModal>
                             </td>
                         </tr>
                     </tfoot>
