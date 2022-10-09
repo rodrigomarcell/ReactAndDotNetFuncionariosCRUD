@@ -8,14 +8,16 @@ export class AddFuncModal extends Component {
         this.state = {
             departamentos: [],
             nomeArquivoFoto: "/avatar.png",
-            fotoPath: "",
+            fotoPath: ""
         };
         this.handleSubmit = this.handleSubmit.bind(this);
         this.handleSaveFile = this.handleSaveFile.bind(this);
     }
 
 
+
     componentDidMount() {
+
 
         this.setState({ nomeArquivoFoto: "/avatar.png" });
         this.setState({ fotoPath: process.env.REACT_APP_FOTOPATH + this.state.nomeArquivoFoto });
@@ -27,10 +29,19 @@ export class AddFuncModal extends Component {
             });
     }
 
+    // componentDidUpdate(prevProps, prevState) {
+
+    //     if (this.state.nomeArquivoFoto !== "/avatar.png") {
+
+    //         this.setState({ nomeArquivoFoto: "/avatar.png" });
+    //         this.setState({ fotoPath: process.env.REACT_APP_FOTOPATH + this.state.nomeArquivoFoto });
+    //     }
+    // }
+
     handleSubmit(event) {
 
         event.preventDefault();
-        
+        debugger
         fetch(process.env.REACT_APP_API + '/funcionarios', {
             method: 'POST',
             headers: {
@@ -42,7 +53,7 @@ export class AddFuncModal extends Component {
                 NomeFuncinoario: event.target.NomeFuncinoario.value,
                 Departamento: event.target.Departamento.value,
                 DataInicio: event.target.DataInicio.value,
-                NomeArquivoFoto: this.state.fotoPath
+                NomeArquivoFoto: process.env.REACT_APP_FOTOPATH +"/"+event.target.NomeArquivoFoto.value.split("\\")[2]
             })
         })
             .then(res => res.json())
@@ -53,6 +64,8 @@ export class AddFuncModal extends Component {
             });
 
     }
+
+
 
     handleSaveFile(event) {
 
@@ -72,9 +85,10 @@ export class AddFuncModal extends Component {
             .then(res => res.json())
             .then(result => {
 
-                this.setState({ fotoPath: process.env.REACT_APP_FOTOPATH + "/" + result }, () => {
-                    alert('Imagem alterada com sucesso ' + this.state.fotoPath);
-                });
+                this.props.onChange("/" + result);
+                // this.setState({ fotoPath: process.env.REACT_APP_FOTOPATH + "/" + result }, () => {
+                //     alert('Imagem alterada com sucesso ' + this.state.fotoPath);
+                // });
 
             }, (erro) => {
                 alert('Falha');
@@ -83,6 +97,8 @@ export class AddFuncModal extends Component {
 
 
     render() {
+
+
         return (
             <div className="container">
                 <Modal {...this.props} size='lg' aria-labelledby='contained-modal-title-vcenter' centered>
@@ -93,9 +109,10 @@ export class AddFuncModal extends Component {
                         </Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        <Row>
-                            <Col sm={6}>
-                                <Form onSubmit={this.handleSubmit}>
+                        <Form onSubmit={this.handleSubmit}>
+                            <Row>
+                                <Col sm={6}>
+
 
                                     <Form.Group controlId="NomeFuncinoario">
                                         <Form.Label>Nome Funcionário</Form.Label>
@@ -127,13 +144,15 @@ export class AddFuncModal extends Component {
                                             Add Funcionário
                                         </Button>
                                     </Form.Group>
-                                </Form>
-                            </Col>
-                            <Col sm={6}>
-                                <img width="200px" alt="Imagem" height="200px" src={this.state.fotoPath} />
-                                <input name="NomeArquivoFoto" onChange={this.handleSaveFile} type="file" />
-                            </Col>
-                        </Row>
+
+
+                                </Col>
+                                <Col sm={6}>
+                                    <img width="200px" alt="Imagem" height="200px" src={process.env.REACT_APP_FOTOPATH + this.props.funcfoto} />
+                                    <input name="NomeArquivoFoto" onChange={this.handleSaveFile} type="file" />
+                                </Col>
+                            </Row>
+                        </Form>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button vaiant="danger" onClick={this.props.onHide}>Fechar</Button>
