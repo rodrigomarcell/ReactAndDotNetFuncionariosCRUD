@@ -5,15 +5,21 @@ export class AddFuncModal extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { departamentos: [] };
+        this.state = {
+            departamentos: [],
+            nomeArquivoFoto: "/avatar.png",
+            fotoPath: "",
+        };
         this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleSaveFile =  this.handleSaveFile.bind(this);
+        this.handleSaveFile = this.handleSaveFile.bind(this);
     }
 
-    fotofilename = "/unknow.png";
-    imagesrc = process.env.REACT_APP_FOTOPATH + this.fotofilename;
 
     componentDidMount() {
+
+        this.setState({ nomeArquivoFoto: "/avatar.png" });
+        this.setState({ fotoPath: process.env.REACT_APP_FOTOPATH + this.state.nomeArquivoFoto });
+
         fetch(process.env.REACT_APP_API + '/departamentos')
             .then(response => response.json())
             .then(data => {
@@ -22,7 +28,9 @@ export class AddFuncModal extends Component {
     }
 
     handleSubmit(event) {
+
         event.preventDefault();
+        
         fetch(process.env.REACT_APP_API + '/funcionarios', {
             method: 'POST',
             headers: {
@@ -34,7 +42,7 @@ export class AddFuncModal extends Component {
                 NomeFuncinoario: event.target.NomeFuncinoario.value,
                 Departamento: event.target.Departamento.value,
                 DataInicio: event.target.DataInicio.value,
-                NomeAraquivoFoto: event.target.NomeAraquivoFoto.value
+                NomeArquivoFoto: this.state.fotoPath
             })
         })
             .then(res => res.json())
@@ -63,7 +71,11 @@ export class AddFuncModal extends Component {
         })
             .then(res => res.json())
             .then(result => {
-                this.imagesrc = process.env.REACT_APP_FOTOPATH + result;
+
+                this.setState({ fotoPath: process.env.REACT_APP_FOTOPATH + "/" + result }, () => {
+                    alert('Imagem alterada com sucesso ' + this.state.fotoPath);
+                });
+
             }, (erro) => {
                 alert('Falha');
             })
@@ -94,7 +106,6 @@ export class AddFuncModal extends Component {
                                         <Form.Label>Departamento</Form.Label>
                                         <Form.Control as="select">
                                             {this.state.departamentos.map(dep => {
-                                                debugger
                                                 return <option key={dep.departamentoId}>{dep.NomeDepartamento}</option>
                                             })}
                                         </Form.Control>
@@ -119,8 +130,8 @@ export class AddFuncModal extends Component {
                                 </Form>
                             </Col>
                             <Col sm={6}>
-                            <Image  name="NomeAraquivoFoto" width="200px" height="200px" src={this.imagesrc} />
-                            <input onChange={this.handleFileSelected} type="file" />
+                                <img width="200px" alt="Imagem" height="200px" src={this.state.fotoPath} />
+                                <input name="NomeArquivoFoto" onChange={this.handleSaveFile} type="file" />
                             </Col>
                         </Row>
                     </Modal.Body>

@@ -70,7 +70,7 @@ namespace ReactAndDotNetFuncionarios.Controllers
                     '" + funcionario.NomeFuncinoario + @"',
                     '" + funcionario.Departamento + @"',
                     '" + funcionario.DataInicio + @"',
-                    '" + funcionario.NomeAraquivoFoto + @"'
+                    '" + funcionario.NomeArquivoFoto + @"'
 
                 )";
 
@@ -101,7 +101,7 @@ namespace ReactAndDotNetFuncionarios.Controllers
                      NomeEmpregado = '" + funcionario.NomeFuncinoario + @"',
                      Departamento = '" + funcionario.Departamento + @"',
                      DataInicio = '" + funcionario.DataInicio + @"',
-                     NomeArquivoFoto = '" + funcionario.NomeAraquivoFoto + @"'
+                     NomeArquivoFoto = '" + funcionario.NomeArquivoFoto + @"'
                      where empregadoId = '" + id + "'";
 
 

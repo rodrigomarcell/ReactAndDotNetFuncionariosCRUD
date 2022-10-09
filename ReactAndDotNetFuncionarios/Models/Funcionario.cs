@@ -11,7 +11,7 @@
 
         public string? DataInicio { get; set; }
 
-        public string? NomeAraquivoFoto { get; set; }
+        public string? NomeArquivoFoto { get; set; }
 
     }
 }
