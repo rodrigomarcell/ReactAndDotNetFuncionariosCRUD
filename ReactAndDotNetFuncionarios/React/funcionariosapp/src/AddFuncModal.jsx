@@ -15,9 +15,7 @@ export class AddFuncModal extends Component {
     }
 
 
-
     componentDidMount() {
-
 
         this.setState({ nomeArquivoFoto: "/avatar.png" });
         this.setState({ fotoPath: process.env.REACT_APP_FOTOPATH + this.state.nomeArquivoFoto });
@@ -29,14 +27,6 @@ export class AddFuncModal extends Component {
             });
     }
 
-    // componentDidUpdate(prevProps, prevState) {
-
-    //     if (this.state.nomeArquivoFoto !== "/avatar.png") {
-
-    //         this.setState({ nomeArquivoFoto: "/avatar.png" });
-    //         this.setState({ fotoPath: process.env.REACT_APP_FOTOPATH + this.state.nomeArquivoFoto });
-    //     }
-    // }
 
     handleSubmit(event) {
 
@@ -149,7 +139,7 @@ export class AddFuncModal extends Component {
                                 </Col>
                                 <Col sm={6}>
                                     <img width="200px" alt="Imagem" height="200px" src={process.env.REACT_APP_FOTOPATH + this.props.funcfoto} />
-                                    <input name="NomeArquivoFoto" onChange={this.handleSaveFile} type="file" />
+                                    <input name="NomeArquivoFoto" onChange={this.handleSaveFile} type="file" required/>
                                 </Col>
                             </Row>
                         </Form>

@@ -74,7 +74,7 @@ export class Funcionario extends Component {
         };
 
         let fotoNameChange = (nomeFoto) => {
-            if(typeof nomeFoto !== 'object'){
+            if(typeof nomeFoto !== 'object'){                
                 this.setState({ funcfoto: nomeFoto });
             }else{
                 return;
@@ -131,6 +131,7 @@ export class Funcionario extends Component {
                                             funcdep={funcdep}
                                             funcfoto={funcfoto}
                                             funcdatainicio={funcdatainicio}
+                                            onChange = {fotoNameChange}
                                         />
                                     </ButtonToolbar>
                                 </th>
